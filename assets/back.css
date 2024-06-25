@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+/* ----------------------------------------------------------
+  Form
+---------------------------------------------------------- */
+
+.wpunotifications-main-form .box label {
+    display: block;
+    margin-bottom: 0.3em;
+    font-weight: bold;
+}

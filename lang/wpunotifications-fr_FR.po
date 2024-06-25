@@ -1,0 +1,184 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WPU Notifications\n"
+"POT-Creation-Date: 2024-06-25 19:17+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: __;_x;_e\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-SearchPath-0: ../.\n"
+"X-Poedit-SearchPathExcluded-0: inc/WPUBaseAdminDatas\n"
+"X-Poedit-SearchPathExcluded-1: inc/WPUBaseAdminPage\n"
+"X-Poedit-SearchPathExcluded-2: inc/WPUBaseCron\n"
+"X-Poedit-SearchPathExcluded-3: inc/WPUBaseEmail\n"
+"X-Poedit-SearchPathExcluded-4: inc/WPUBaseFields\n"
+"X-Poedit-SearchPathExcluded-5: inc/WPUBaseFileCache\n"
+"X-Poedit-SearchPathExcluded-6: inc/WPUBaseMessages\n"
+"X-Poedit-SearchPathExcluded-7: inc/WPUBaseSettings\n"
+"X-Poedit-SearchPathExcluded-8: inc/WPUBaseToolbox\n"
+"X-Poedit-SearchPathExcluded-9: inc/WPUBaseUpdate\n"
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:587
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:823
+msgid "New Post"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:589
+msgid "Back"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:608
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:240
+msgid "No"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:609
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:241
+msgid "Yes"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:623
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:166
+msgid "Submit"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:784
+#, php-format
+msgid "Items %s - %s"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:798
+#, php-format
+msgid "<strong>Filter :</strong> %s • <strong>Value :</strong> %s"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:799
+msgid "Reset"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:809
+msgid "Search"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:811
+msgid "Clear"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:870
+msgid "Show more details"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:876
+msgid "Edit"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:876
+msgid "View"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:884
+#: .././wpunotifications.php:262
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:886
+msgid "Delete filtered lines"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:897
+msgid "Export all"
+msgstr ""
+
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:899
+msgid "Export filtered view"
+msgstr ""
+
+#: .././inc/WPUBaseAdminPage/WPUBaseAdminPage.php:202
+msgid "Help"
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:132
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:615
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:622
+#: .././wpunotifications.php:68
+msgid "Settings"
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:205
+msgid "Check all"
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:206
+msgid "Uncheck all"
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:318
+msgid "Settings saved."
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:378
+msgid "Upload New Media"
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:531
+msgid "Language"
+msgstr ""
+
+#: .././inc/WPUBaseSettings/WPUBaseSettings.php:637
+msgid "Save"
+msgstr ""
+
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:192
+msgid "Previous"
+msgstr ""
+
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:193
+msgid "Next"
+msgstr ""
+
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:384
+#, php-format
+msgid "The field “%s” is required"
+msgstr ""
+
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:389
+#, php-format
+msgid "The field “%s” should be an email"
+msgstr ""
+
+#: .././wpunotifications.php:55
+msgid "Handle user notifications"
+msgstr "Gére les notifications des utilisateurs"
+
+#: .././wpunotifications.php:121
+msgid "Import Settings"
+msgstr ""
+
+#: .././wpunotifications.php:196
+msgid "Send a notification"
+msgstr "Envoyer une notification"
+
+#: .././wpunotifications.php:202
+msgid "Message"
+msgstr "Message"
+
+#: .././wpunotifications.php:207
+msgid "User ID"
+msgstr "ID de l’utilisateur"
+
+#: .././wpunotifications.php:212
+msgid "Notification type"
+msgstr "Type de notification"
+
+#: .././wpunotifications.php:267
+msgid "Delete all"
+msgstr "Supprimer tout"
