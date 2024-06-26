@@ -1,2 +1,54 @@
 @charset "UTF-8";
 
+/* ----------------------------------------------------------
+  Default theme
+---------------------------------------------------------- */
+
+.wpunotifications-notifications-list {
+    z-index: 1;
+    position: relative;
+}
+
+/* Notifications
+-------------------------- */
+
+.wpunotifications-notification {
+    z-index: 1;
+    position: relative;
+    margin-bottom: 0.5em;
+    padding: 0.5em 2.5em 0.5em 0.5em;
+    border: 1px solid;
+    border-radius: 0.3em;
+}
+
+.wpunotifications-delete-single-notification {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    line-height: 0.8;
+    outline: 1px solid #000;
+    color: #000;
+    background-color: #CCC;
+    cursor: pointer;
+}
+
+.wpunotifications-delete-single-notification:focus,
+.wpunotifications-delete-single-notification:hover {
+    color: #fff;
+    background-color: #333;
+}
+
+.wpunotifications-delete-single-notification span {
+    position: absolute;
+    left: -999px;
+}
+
+.wpunotifications-delete-single-notification:before {
+    content: '×';
+}

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPU Notifications\n"
-"POT-Creation-Date: 2024-06-25 19:17+0200\n"
+"POT-Creation-Date: 2024-06-26 11:14+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,157 +28,185 @@ msgstr ""
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:587
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:823
 msgid "New Post"
-msgstr ""
+msgstr "Nouvel article"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:589
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:608
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:240
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:237
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:609
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:241
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:238
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:623
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:166
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:163
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:784
 #, php-format
 msgid "Items %s - %s"
-msgstr ""
+msgstr "Notifications %s - %s"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:798
 #, php-format
 msgid "<strong>Filter :</strong> %s • <strong>Value :</strong> %s"
-msgstr ""
+msgstr "<strong>Filtre:</strong> %s • <strong>Valeur :</strong> %s"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:799
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:809
 msgid "Search"
-msgstr ""
+msgstr "Rechercher"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:811
 msgid "Clear"
-msgstr ""
+msgstr "Vider"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:870
 msgid "Show more details"
-msgstr ""
+msgstr "Afficher plus de détails"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:876
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:876
 msgid "View"
-msgstr ""
+msgstr "Voir"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:884
-#: .././wpunotifications.php:262
+#: .././wpunotifications.php:356
 msgid "Delete"
 msgstr "Supprimer"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:886
 msgid "Delete filtered lines"
-msgstr ""
+msgstr "Supprimer les lignes filtrées"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:897
 msgid "Export all"
-msgstr ""
+msgstr "Tout exporter"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:899
 msgid "Export filtered view"
-msgstr ""
+msgstr "Exporter la vue filtrée"
 
 #: .././inc/WPUBaseAdminPage/WPUBaseAdminPage.php:202
 msgid "Help"
-msgstr ""
+msgstr "Aide"
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:132
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:615
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:622
-#: .././wpunotifications.php:68
+#: .././wpunotifications.php:78 .././wpunotifications.php:80
 msgid "Settings"
-msgstr ""
+msgstr "Réglages"
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:205
 msgid "Check all"
-msgstr ""
+msgstr "Tout cocher"
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:206
 msgid "Uncheck all"
-msgstr ""
+msgstr "Tout décocher"
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:318
 msgid "Settings saved."
-msgstr ""
+msgstr "Paramètres sauvegardés."
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:378
 msgid "Upload New Media"
-msgstr ""
+msgstr "Envoi d'un nouveau média"
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:531
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:637
 msgid "Save"
-msgstr ""
+msgstr "Sauvegarder"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:192
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:188
 msgid "Previous"
-msgstr ""
+msgstr "Précédent"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:193
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:189
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:384
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:381
 #, php-format
 msgid "The field “%s” is required"
-msgstr ""
+msgstr "Le champ « %s » est obligatoire"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:389
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:386
 #, php-format
 msgid "The field “%s” should be an email"
-msgstr ""
+msgstr "Le champ « %s » doit être un e-mail"
 
-#: .././wpunotifications.php:55
+#: .././wpunotifications.php:57
 msgid "Handle user notifications"
 msgstr "Gére les notifications des utilisateurs"
 
-#: .././wpunotifications.php:121
-msgid "Import Settings"
-msgstr ""
+#: .././wpunotifications.php:88
+msgid "Notifications"
+msgstr "Notifications"
 
-#: .././wpunotifications.php:196
+#: .././wpunotifications.php:141
+msgid "Features"
+msgstr "Fonctionnalités"
+
+#: .././wpunotifications.php:147
+msgid "Enable default CSS"
+msgstr "Activer le CSS par défaut"
+
+#: .././wpunotifications.php:222
 msgid "Send a notification"
 msgstr "Envoyer une notification"
 
-#: .././wpunotifications.php:202
+#: .././wpunotifications.php:228 .././wpunotifications.php:300
 msgid "Message"
 msgstr "Message"
 
-#: .././wpunotifications.php:207
+#: .././wpunotifications.php:233
 msgid "User ID"
 msgstr "ID de l’utilisateur"
 
-#: .././wpunotifications.php:212
+#: .././wpunotifications.php:238
 msgid "Notification type"
 msgstr "Type de notification"
 
-#: .././wpunotifications.php:267
+#: .././wpunotifications.php:279
+msgid "Save Changes"
+msgstr "Sauvegarder"
+
+#: .././wpunotifications.php:296
+msgid "ID"
+msgstr "ID"
+
+#: .././wpunotifications.php:297
+msgid "Date"
+msgstr "Date"
+
+#: .././wpunotifications.php:298
+msgid "Account"
+msgstr "Compte"
+
+#: .././wpunotifications.php:299
+msgid "Notif type"
+msgstr "Type de notif"
+
+#: .././wpunotifications.php:361
 msgid "Delete all"
 msgstr "Supprimer tout"

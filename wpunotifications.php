@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.1.0
+Version: 0.2.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.1.0';
+    private $plugin_version = '0.2.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -34,6 +34,7 @@ class WPUNotifications {
     private $settings_obj;
     private $settings_details;
     private $plugin_description;
+    private $admin_page_id = 'wpunotifications-notifications';
 
     public function __construct() {
         add_action('plugins_loaded', array(&$this, 'plugins_loaded'));
@@ -64,16 +65,33 @@ class WPUNotifications {
             'main' => array(
                 'icon_url' => 'dashicons-warning',
                 'menu_name' => $this->plugin_settings['name'],
-                'name' => 'Main page',
-                'settings_link' => true,
-                'settings_name' => __('Settings'),
+                'name' => $this->plugin_settings['name'],
                 'function_content' => array(&$this,
                     'page_content__main'
                 ),
                 'function_action' => array(&$this,
                     'page_action__main'
                 )
+            ),
+            'settings' => array(
+                'parent' => 'main',
+                'name' => __('Settings', 'wpunotifications'),
+                'settings_link' => true,
+                'settings_name' => __('Settings', 'wpunotifications'),
+                'has_form' => false,
+                'function_content' => array(&$this,
+                    'page_content__settings'
+                )
+            ),
+            'notifications' => array(
+                'parent' => 'main',
+                'name' => __('Notifications', 'wpunotifications'),
+                'has_form' => false,
+                'function_content' => array(&$this,
+                    'page_content__notifications'
+                )
             )
+
         );
         $pages_options = array(
             'id' => $this->plugin_settings['id'],
@@ -91,10 +109,11 @@ class WPUNotifications {
         $this->baseadmindatas->init(array(
             'handle_database' => false,
             'plugin_id' => $this->plugin_settings['id'],
+            'plugin_pageid' => $this->admin_page_id,
             'table_name' => $this->plugin_settings['id'],
             'table_fields' => array(
                 'message' => array(
-                    'public_name' => 'Value',
+                    'public_name' => 'Message',
                     'type' => 'sql',
                     'sql' => 'TEXT'
                 ),
@@ -118,10 +137,18 @@ class WPUNotifications {
             'plugin_id' => $this->plugin_settings['id'],
             'option_id' => $this->plugin_settings['id'] . '_options',
             'sections' => array(
-
+                'features' => array(
+                    'name' => __('Features', 'wpunotifications')
+                )
             )
         );
-        $this->settings = array();
+        $this->settings = array(
+            'settings__base_css' => array(
+                'label' => __('Enable default CSS', 'wpunotifications'),
+                'type' => 'checkbox',
+                'section' => 'features'
+            )
+        );
         require_once __DIR__ . '/inc/WPUBaseSettings/WPUBaseSettings.php';
         $this->settings_obj = new \wpunotifications\WPUBaseSettings($this->settings_details, $this->settings);
         /* Include hooks */
@@ -140,7 +167,9 @@ class WPUNotifications {
     public function wp_enqueue_scripts() {
         /* Front Style */
         wp_register_style('wpunotifications_front_style', plugins_url('assets/front.css', __FILE__), array(), $this->plugin_version);
-        wp_enqueue_style('wpunotifications_front_style');
+        if ($this->settings_obj->get_setting('settings__base_css') == '1') {
+            wp_enqueue_style('wpunotifications_front_style');
+        }
         /* Front Script with localization / variables */
         wp_register_script('wpunotifications_front_script', plugins_url('assets/front.js', __FILE__), array('wp-util'), $this->plugin_version, true);
         wp_localize_script('wpunotifications_front_script', 'wpunotifications_settings', array(
@@ -239,33 +268,100 @@ class WPUNotifications {
             )
         );
     }
+
+    /* ----------------------------------------------------------
+      Settings
+    ---------------------------------------------------------- */
+
+    function page_content__settings() {
+        settings_errors();
+        echo '<form action="' . admin_url('options.php') . '" method="post">';
+        settings_fields($this->settings_details['option_id']);
+        do_settings_sections($this->settings_details['plugin_id']);
+        submit_button(__('Save Changes', 'wpunotifications'));
+        echo '</form>';
+    }
+
+    /* ----------------------------------------------------------
+      List
+    ---------------------------------------------------------- */
+
+    function page_content__notifications() {
+
+        add_filter('wpubaseadmindatas_cellcontent', array(&$this, 'wpubaseadmindatas_cellcontent'), 10, 3);
+
+        echo $this->baseadmindatas->get_admin_table(
+            false,
+            array(
+                'perpage' => 50,
+                'columns' => array(
+                    'id' => __('ID', 'wpunotifications'),
+                    'creation' => __('Date', 'wpunotifications'),
+                    'user_id' => __('Account', 'wpunotifications'),
+                    'notif_type' => __('Notif type', 'wpunotifications'),
+                    'message' => __('Message', 'wpunotifications')
+                )
+            )
+        );
+    }
+
+    function wpubaseadmindatas_cellcontent($cellcontent, $cell_id, $settings) {
+        $admin_url = admin_url('admin.php?page=' . $this->admin_page_id);
+        $filter_url = $admin_url . '&' . http_build_query(array(
+            'filter_key' => $cell_id,
+            'filter_value' => $cellcontent
+        ));
+        if ($cell_id == 'user_id' && is_numeric($cellcontent)) {
+            $user_id = $cellcontent;
+            $user = get_user_by('id', $user_id);
+            if ($user) {
+                $login = '<a href="' . esc_url($filter_url) . '">' . esc_html($user->user_login) . '</a>';
+                $cellcontent = '<img loading="lazy" style="height:16px;width:16px;vertical-align:middle;margin-right:0.3em" src="' . esc_url(get_avatar_url($user->ID, array('size' => 16))) . '" />';
+                $cellcontent .= '<strong style="vertical-align:middle">' . $login . '</strong>';
+            }
+        }
+        return $cellcontent;
+
+    }
+
+    /* ----------------------------------------------------------
+      Getters
+    ---------------------------------------------------------- */
+
+    function get_user_notifications($user_id) {
+        global $wpdb;
+        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d", $user_id);
+        return $wpdb->get_results($q);
+    }
+
     /* ----------------------------------------------------------
       Front Items
     ---------------------------------------------------------- */
 
     public function wpunotifications_display_notifications($args = array()) {
-        $defaults = array(
+        $args = array_merge(array(
             'user_id' => get_current_user_id()
-        );
-        $args = array_merge($defaults, $args);
+        ), $args);
 
-        global $wpdb;
-        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d", $args['user_id']);
-        $notifications = $wpdb->get_results($q);
+        $notifications = $this->get_user_notifications($args['user_id']);
 
-        if (!empty($notifications)) {
-            echo '<div id="wpunotifications-notifications-list">';
-            echo '<div class="wpunotifications-notifications">';
-            foreach ($notifications as $notification) {
-                echo '<div id="wpunotifications-notification-' . $notification->id . '" class="wpunotifications-notification wpunotifications-notification--' . $notification->notif_type . '">';
-                echo '<button type="button" class="wpunotifications-delete-notification" data-delete-notification="' . $notification->id . '">' . __('Delete', 'wpunotifications') . '</button>';
-                echo '<p>' . $notification->message . '</p>';
-                echo '</div>';
-            }
-            echo '</div>';
-            echo '<button type="button" data-delete-notification="all" class="wpunotifications-delete-notification wpunotifications-delete-all-notifications">' . __('Delete all', 'wpunotifications') . '</button>';
+        if (empty($notifications)) {
+            return;
+        }
+
+        $default_css = $this->settings_obj->get_setting('settings__base_css');
+
+        echo '<div id="wpunotifications-notifications-list" class="wpunotifications-notifications-list" data-use-default-css="' . esc_attr($default_css) . '">';
+        echo '<div class="wpunotifications-notifications">';
+        foreach ($notifications as $notification) {
+            echo '<div id="wpunotifications-notification-' . $notification->id . '" class="wpunotifications-notification wpunotifications-notification--' . $notification->notif_type . '">';
+            echo '<button type="button" class="wpunotifications-delete-notification wpunotifications-delete-single-notification" data-delete-notification="' . $notification->id . '"><span>' . __('Delete', 'wpunotifications') . '</span></button>';
+            echo '<p>' . $notification->message . '</p>';
             echo '</div>';
         }
+        echo '</div>';
+        echo '<button type="button" data-delete-notification="all" class="wpunotifications-delete-notification wpunotifications-delete-all-notifications"><span>' . __('Delete all', 'wpunotifications') . '</span></button>';
+        echo '</div>';
     }
 
 }
