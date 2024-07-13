@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.2.0
+Version: 0.3.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.2.0';
+    private $plugin_version = '0.3.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -43,7 +43,6 @@ class WPUNotifications {
         add_action('admin_enqueue_scripts', array(&$this, 'admin_enqueue_scripts'));
         # AJAX Action
         add_action('wp_ajax_wpunotifications_ajax_action', array(&$this, 'wpunotifications_ajax_action'));
-        add_action('wp_ajax_nopriv_wpunotifications_ajax_action', array(&$this, 'wpunotifications_ajax_action'));
 
         # Front Items
         add_action('wpunotifications_display_notifications', array(&$this, 'wpunotifications_display_notifications'), 10, 2);
@@ -124,6 +123,10 @@ class WPUNotifications {
                 'notif_type' => array(
                     'public_name' => 'Notification type',
                     'type' => 'varchar'
+                ),
+                'is_read' => array(
+                    'public_name' => 'Is read',
+                    'type' => 'number'
                 )
             )
         ));
@@ -184,21 +187,36 @@ class WPUNotifications {
         wp_enqueue_style('wpunotifications_back_style');
     }
 
-    function wpunotifications_ajax_action() {
+    public function wpunotifications_ajax_action() {
 
-        if (!isset($_POST['notification_id'])) {
+        if (!isset($_POST['notification_id'], $_POST['action_type']) || !is_user_logged_in()) {
             wp_send_json_error(array(
                 'error' => 'No notification'
             ), 400);
         }
 
+        if (!in_array($_POST['action_type'], array('mark_as_read', 'delete'))) {
+            wp_send_json_error(array(
+                'error' => 'Invalid action'
+            ), 400);
+        }
+        $action_type = $_POST['action_type'];
+
         global $wpdb;
         $user_id = get_current_user_id();
         $table = $wpdb->prefix . $this->plugin_settings['id'];
         if ($_POST['notification_id'] == 'all') {
-            $wpdb->delete($table, array('user_id' => $user_id));
+            if ($action_type == 'delete') {
+                $wpdb->delete($table, array('user_id' => $user_id));
+            } else {
+                $wpdb->update($table, array('is_read' => 1), array('user_id' => $user_id));
+            }
         } elseif (is_numeric($_POST['notification_id'])) {
-            $wpdb->delete($table, array('id' => $_POST['notification_id'], 'user_id' => $user_id));
+            if ($action_type == 'mark_as_read') {
+                $wpdb->update($table, array('is_read' => 1), array('id' => $_POST['notification_id'], 'user_id' => $user_id));
+            } else {
+                $wpdb->delete($table, array('id' => $_POST['notification_id'], 'user_id' => $user_id));
+            }
         }
 
         wp_send_json_success(array(
@@ -206,7 +224,7 @@ class WPUNotifications {
         ), 200);
     }
 
-    function create_notification($args = array()) {
+    public function create_notification($args = array()) {
         $defaults = array(
             'message' => '',
             'user_id' => get_current_user_id(),
@@ -264,7 +282,8 @@ class WPUNotifications {
             array(
                 'message' => $message,
                 'user_id' => $user_id,
-                'notif_type' => $notif_type
+                'notif_type' => $notif_type,
+                'is_read' => 0
             )
         );
     }
@@ -273,7 +292,7 @@ class WPUNotifications {
       Settings
     ---------------------------------------------------------- */
 
-    function page_content__settings() {
+    public function page_content__settings() {
         settings_errors();
         echo '<form action="' . admin_url('options.php') . '" method="post">';
         settings_fields($this->settings_details['option_id']);
@@ -286,7 +305,7 @@ class WPUNotifications {
       List
     ---------------------------------------------------------- */
 
-    function page_content__notifications() {
+    public function page_content__notifications() {
 
         add_filter('wpubaseadmindatas_cellcontent', array(&$this, 'wpubaseadmindatas_cellcontent'), 10, 3);
 
@@ -299,13 +318,14 @@ class WPUNotifications {
                     'creation' => __('Date', 'wpunotifications'),
                     'user_id' => __('Account', 'wpunotifications'),
                     'notif_type' => __('Notif type', 'wpunotifications'),
+                    'is_read' => __('Read', 'wpunotifications'),
                     'message' => __('Message', 'wpunotifications')
                 )
             )
         );
     }
 
-    function wpubaseadmindatas_cellcontent($cellcontent, $cell_id, $settings) {
+    public function wpubaseadmindatas_cellcontent($cellcontent, $cell_id, $settings) {
         $admin_url = admin_url('admin.php?page=' . $this->admin_page_id);
         $filter_url = $admin_url . '&' . http_build_query(array(
             'filter_key' => $cell_id,
@@ -328,7 +348,7 @@ class WPUNotifications {
       Getters
     ---------------------------------------------------------- */
 
-    function get_user_notifications($user_id) {
+    public function get_user_notifications($user_id) {
         global $wpdb;
         $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d", $user_id);
         return $wpdb->get_results($q);
@@ -339,6 +359,9 @@ class WPUNotifications {
     ---------------------------------------------------------- */
 
     public function wpunotifications_display_notifications($args = array()) {
+        if (!is_array($args)) {
+            $args = array();
+        }
         $args = array_merge(array(
             'user_id' => get_current_user_id()
         ), $args);
@@ -353,14 +376,22 @@ class WPUNotifications {
 
         echo '<div id="wpunotifications-notifications-list" class="wpunotifications-notifications-list" data-use-default-css="' . esc_attr($default_css) . '">';
         echo '<div class="wpunotifications-notifications">';
+        $has_unread = false;
         foreach ($notifications as $notification) {
-            echo '<div id="wpunotifications-notification-' . $notification->id . '" class="wpunotifications-notification wpunotifications-notification--' . $notification->notif_type . '">';
+            echo '<div id="wpunotifications-notification-' . $notification->id . '" data-is-read="' . $notification->is_read . '" class="wpunotifications-notification wpunotifications-notification--' . $notification->notif_type . '">';
             echo '<button type="button" class="wpunotifications-delete-notification wpunotifications-delete-single-notification" data-delete-notification="' . $notification->id . '"><span>' . __('Delete', 'wpunotifications') . '</span></button>';
+            if (!$notification->is_read) {
+                $has_unread = true;
+                echo '<button type="button" class="wpunotifications-mark-notification-as-read wpunotifications-mark-single-notification-as-read" data-mark-notification-as-read="' . $notification->id . '"><span>' . __('Mark as read', 'wpunotifications') . '</span></button>';
+            }
             echo '<p>' . $notification->message . '</p>';
             echo '</div>';
         }
         echo '</div>';
         echo '<button type="button" data-delete-notification="all" class="wpunotifications-delete-notification wpunotifications-delete-all-notifications"><span>' . __('Delete all', 'wpunotifications') . '</span></button>';
+        if ($has_unread) {
+            echo '<button type="button" data-mark-notification-as-read="all" class="wpunotifications-mark-notification-as-read wpunotifications-mark-all-notifications-as-read"><span>' . __('Mark all as read', 'wpunotifications') . '</span></button>';
+        }
         echo '</div>';
     }
 

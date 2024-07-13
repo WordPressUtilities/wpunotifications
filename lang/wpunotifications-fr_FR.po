@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPU Notifications\n"
-"POT-Creation-Date: 2024-06-26 11:14+0200\n"
+"POT-Creation-Date: 2024-07-13 23:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -36,18 +36,18 @@ msgstr "Retour"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:608
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:237
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:242
 msgid "No"
 msgstr "Non"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:609
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:238
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:243
 msgid "Yes"
 msgstr "Oui"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:623
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:163
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:167
 msgid "Submit"
 msgstr "Envoyer"
 
@@ -86,7 +86,7 @@ msgid "View"
 msgstr "Voir"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:884
-#: .././wpunotifications.php:356
+#: .././wpunotifications.php:382
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -109,7 +109,7 @@ msgstr "Aide"
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:132
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:615
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:622
-#: .././wpunotifications.php:78 .././wpunotifications.php:80
+#: .././wpunotifications.php:77 .././wpunotifications.php:79
 msgid "Settings"
 msgstr "Réglages"
 
@@ -137,76 +137,88 @@ msgstr "Langue"
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:188
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:193
 msgid "Previous"
 msgstr "Précédent"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:189
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:194
 msgid "Next"
 msgstr "Suivant"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:381
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:386
 #, php-format
 msgid "The field “%s” is required"
 msgstr "Le champ « %s » est obligatoire"
 
-#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:386
+#: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:391
 #, php-format
 msgid "The field “%s” should be an email"
 msgstr "Le champ « %s » doit être un e-mail"
 
-#: .././wpunotifications.php:57
+#: .././wpunotifications.php:56
 msgid "Handle user notifications"
 msgstr "Gére les notifications des utilisateurs"
 
-#: .././wpunotifications.php:88
+#: .././wpunotifications.php:87
 msgid "Notifications"
 msgstr "Notifications"
 
-#: .././wpunotifications.php:141
+#: .././wpunotifications.php:144
 msgid "Features"
 msgstr "Fonctionnalités"
 
-#: .././wpunotifications.php:147
+#: .././wpunotifications.php:150
 msgid "Enable default CSS"
 msgstr "Activer le CSS par défaut"
 
-#: .././wpunotifications.php:222
+#: .././wpunotifications.php:242
 msgid "Send a notification"
 msgstr "Envoyer une notification"
 
-#: .././wpunotifications.php:228 .././wpunotifications.php:300
+#: .././wpunotifications.php:248 .././wpunotifications.php:322
 msgid "Message"
 msgstr "Message"
 
-#: .././wpunotifications.php:233
+#: .././wpunotifications.php:253
 msgid "User ID"
 msgstr "ID de l’utilisateur"
 
-#: .././wpunotifications.php:238
+#: .././wpunotifications.php:258
 msgid "Notification type"
 msgstr "Type de notification"
 
-#: .././wpunotifications.php:279
+#: .././wpunotifications.php:300
 msgid "Save Changes"
 msgstr "Sauvegarder"
 
-#: .././wpunotifications.php:296
+#: .././wpunotifications.php:317
 msgid "ID"
 msgstr "ID"
 
-#: .././wpunotifications.php:297
+#: .././wpunotifications.php:318
 msgid "Date"
 msgstr "Date"
 
-#: .././wpunotifications.php:298
+#: .././wpunotifications.php:319
 msgid "Account"
 msgstr "Compte"
 
-#: .././wpunotifications.php:299
+#: .././wpunotifications.php:320
 msgid "Notif type"
 msgstr "Type de notif"
 
-#: .././wpunotifications.php:361
+#: .././wpunotifications.php:321
+msgid "Read"
+msgstr "Lu"
+
+#: .././wpunotifications.php:385
+msgid "Mark as read"
+msgstr "Marquer comme lu"
+
+#: .././wpunotifications.php:391
 msgid "Delete all"
 msgstr "Supprimer tout"
+
+#: .././wpunotifications.php:393
+msgid "Mark all as read"
+msgstr "Tout marquer comme lu"
