@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.3.0
+Version: 0.4.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.3.0';
+    private $plugin_version = '0.4.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -38,14 +38,19 @@ class WPUNotifications {
 
     public function __construct() {
         add_action('plugins_loaded', array(&$this, 'plugins_loaded'));
+
         # Front Assets
         add_action('wp_enqueue_scripts', array(&$this, 'wp_enqueue_scripts'));
         add_action('admin_enqueue_scripts', array(&$this, 'admin_enqueue_scripts'));
+
         # AJAX Action
         add_action('wp_ajax_wpunotifications_ajax_action', array(&$this, 'wpunotifications_ajax_action'));
 
         # Front Items
         add_action('wpunotifications_display_notifications', array(&$this, 'wpunotifications_display_notifications'), 10, 2);
+
+        # Redirect
+        add_action('template_redirect', array(&$this, 'template_redirect'));
     }
 
     public function plugins_loaded() {
@@ -127,6 +132,11 @@ class WPUNotifications {
                 'is_read' => array(
                     'public_name' => 'Is read',
                     'type' => 'number'
+                ),
+                'url' => array(
+                    'public_name' => 'URL',
+                    'type' => 'sql',
+                    'sql' => 'TEXT'
                 )
             )
         ));
@@ -188,7 +198,6 @@ class WPUNotifications {
     }
 
     public function wpunotifications_ajax_action() {
-
         if (!isset($_POST['notification_id'], $_POST['action_type']) || !is_user_logged_in()) {
             wp_send_json_error(array(
                 'error' => 'No notification'
@@ -200,37 +209,12 @@ class WPUNotifications {
                 'error' => 'Invalid action'
             ), 400);
         }
-        $action_type = $_POST['action_type'];
 
-        global $wpdb;
-        $user_id = get_current_user_id();
-        $table = $wpdb->prefix . $this->plugin_settings['id'];
-        if ($_POST['notification_id'] == 'all') {
-            if ($action_type == 'delete') {
-                $wpdb->delete($table, array('user_id' => $user_id));
-            } else {
-                $wpdb->update($table, array('is_read' => 1), array('user_id' => $user_id));
-            }
-        } elseif (is_numeric($_POST['notification_id'])) {
-            if ($action_type == 'mark_as_read') {
-                $wpdb->update($table, array('is_read' => 1), array('id' => $_POST['notification_id'], 'user_id' => $user_id));
-            } else {
-                $wpdb->delete($table, array('id' => $_POST['notification_id'], 'user_id' => $user_id));
-            }
-        }
+        $this->read_or_delete_notification($_POST['notification_id'], $_POST['action_type']);
 
         wp_send_json_success(array(
             'ok' => '1'
         ), 200);
-    }
-
-    public function create_notification($args = array()) {
-        $defaults = array(
-            'message' => '',
-            'user_id' => get_current_user_id(),
-            'notif_type' => 'default'
-        );
-        $this->baseadmindatas->create_line(array_merge($defaults, $args));
     }
 
     public function wpunotifications__cron_hook() {
@@ -257,6 +241,11 @@ class WPUNotifications {
                     'value' => 'default',
                     'label' => __('Notification type', 'wpunotifications'),
                     'type' => 'text'
+                ),
+                'url' => array(
+                    'value' => '',
+                    'label' => __('URL', 'wpunotifications'),
+                    'type' => 'url'
                 )
             ),
             array(
@@ -277,12 +266,14 @@ class WPUNotifications {
 
         $message = isset($_POST['message']) ? $_POST['message'] : '';
         $notif_type = (isset($_POST['notif_type']) && $_POST['notif_type']) ? $_POST['notif_type'] : 'default';
+        $url = (isset($_POST['url']) && filter_var($_POST['url'], FILTER_VALIDATE_URL)) ? $_POST['url'] : '';
 
         $this->create_notification(
             array(
                 'message' => $message,
                 'user_id' => $user_id,
                 'notif_type' => $notif_type,
+                'url' => $url,
                 'is_read' => 0
             )
         );
@@ -345,16 +336,6 @@ class WPUNotifications {
     }
 
     /* ----------------------------------------------------------
-      Getters
-    ---------------------------------------------------------- */
-
-    public function get_user_notifications($user_id) {
-        global $wpdb;
-        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d", $user_id);
-        return $wpdb->get_results($q);
-    }
-
-    /* ----------------------------------------------------------
       Front Items
     ---------------------------------------------------------- */
 
@@ -393,6 +374,71 @@ class WPUNotifications {
             echo '<button type="button" data-mark-notification-as-read="all" class="wpunotifications-mark-notification-as-read wpunotifications-mark-all-notifications-as-read"><span>' . __('Mark all as read', 'wpunotifications') . '</span></button>';
         }
         echo '</div>';
+    }
+
+    /* ----------------------------------------------------------
+      Redirect
+    ---------------------------------------------------------- */
+
+    public function template_redirect() {
+        if (!is_user_logged_in()) {
+            return;
+        }
+        if (!isset($_GET['wpunotifications_id']) || !is_numeric($_GET['wpunotifications_id'])) {
+            return;
+        }
+        global $wpdb;
+        $user_id = get_current_user_id();
+        $table = $wpdb->prefix . $this->plugin_settings['id'];
+        $notification = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d and user_id=%d", $_GET['wpunotifications_id'], $user_id));
+        if (!$notification || !$notification->url) {
+            return;
+        }
+        $wpdb->update($table, array('is_read' => 1), array('id' => $notification->id));
+        wp_redirect($notification->url);
+        exit;
+    }
+
+    /* ----------------------------------------------------------
+      Getters
+    ---------------------------------------------------------- */
+
+    public function get_user_notifications($user_id) {
+        global $wpdb;
+        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d", $user_id);
+        return $wpdb->get_results($q);
+    }
+
+    /* ----------------------------------------------------------
+      CRUD
+    ---------------------------------------------------------- */
+
+    public function read_or_delete_notification($notification_id, $action_type) {
+        global $wpdb;
+        $user_id = get_current_user_id();
+        $table = $wpdb->prefix . $this->plugin_settings['id'];
+        if ($notification_id == 'all') {
+            if ($action_type == 'delete') {
+                $wpdb->delete($table, array('user_id' => $user_id));
+            } else {
+                $wpdb->update($table, array('is_read' => 1), array('user_id' => $user_id));
+            }
+        } elseif (is_numeric($notification_id)) {
+            if ($action_type == 'mark_as_read') {
+                $wpdb->update($table, array('is_read' => 1), array('id' => $notification_id, 'user_id' => $user_id));
+            } else {
+                $wpdb->delete($table, array('id' => $notification_id, 'user_id' => $user_id));
+            }
+        }
+    }
+
+    public function create_notification($args = array()) {
+        $defaults = array(
+            'message' => '',
+            'user_id' => get_current_user_id(),
+            'notif_type' => 'default'
+        );
+        $this->baseadmindatas->create_line(array_merge($defaults, $args));
     }
 
 }

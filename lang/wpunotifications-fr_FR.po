@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPU Notifications\n"
-"POT-Creation-Date: 2024-07-13 23:34+0200\n"
+"POT-Creation-Date: 2024-07-14 23:24+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -86,7 +86,7 @@ msgid "View"
 msgstr "Voir"
 
 #: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:884
-#: .././wpunotifications.php:382
+#: .././wpunotifications.php:363
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -109,7 +109,7 @@ msgstr "Aide"
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:132
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:615
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:622
-#: .././wpunotifications.php:77 .././wpunotifications.php:79
+#: .././wpunotifications.php:82 .././wpunotifications.php:84
 msgid "Settings"
 msgstr "Réglages"
 
@@ -155,70 +155,74 @@ msgstr "Le champ « %s » est obligatoire"
 msgid "The field “%s” should be an email"
 msgstr "Le champ « %s » doit être un e-mail"
 
-#: .././wpunotifications.php:56
+#: .././wpunotifications.php:61
 msgid "Handle user notifications"
 msgstr "Gére les notifications des utilisateurs"
 
-#: .././wpunotifications.php:87
+#: .././wpunotifications.php:92
 msgid "Notifications"
 msgstr "Notifications"
 
-#: .././wpunotifications.php:144
+#: .././wpunotifications.php:154
 msgid "Features"
 msgstr "Fonctionnalités"
 
-#: .././wpunotifications.php:150
+#: .././wpunotifications.php:160
 msgid "Enable default CSS"
 msgstr "Activer le CSS par défaut"
 
-#: .././wpunotifications.php:242
+#: .././wpunotifications.php:226
 msgid "Send a notification"
 msgstr "Envoyer une notification"
 
-#: .././wpunotifications.php:248 .././wpunotifications.php:322
+#: .././wpunotifications.php:232 .././wpunotifications.php:313
 msgid "Message"
 msgstr "Message"
 
-#: .././wpunotifications.php:253
+#: .././wpunotifications.php:237
 msgid "User ID"
 msgstr "ID de l’utilisateur"
 
-#: .././wpunotifications.php:258
+#: .././wpunotifications.php:242
 msgid "Notification type"
 msgstr "Type de notification"
 
-#: .././wpunotifications.php:300
+#: .././wpunotifications.php:247
+msgid "URL"
+msgstr "URL"
+
+#: .././wpunotifications.php:291
 msgid "Save Changes"
 msgstr "Sauvegarder"
 
-#: .././wpunotifications.php:317
+#: .././wpunotifications.php:308
 msgid "ID"
 msgstr "ID"
 
-#: .././wpunotifications.php:318
+#: .././wpunotifications.php:309
 msgid "Date"
 msgstr "Date"
 
-#: .././wpunotifications.php:319
+#: .././wpunotifications.php:310
 msgid "Account"
 msgstr "Compte"
 
-#: .././wpunotifications.php:320
+#: .././wpunotifications.php:311
 msgid "Notif type"
 msgstr "Type de notif"
 
-#: .././wpunotifications.php:321
+#: .././wpunotifications.php:312
 msgid "Read"
 msgstr "Lu"
 
-#: .././wpunotifications.php:385
+#: .././wpunotifications.php:366
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: .././wpunotifications.php:391
+#: .././wpunotifications.php:372
 msgid "Delete all"
 msgstr "Supprimer tout"
 
-#: .././wpunotifications.php:393
+#: .././wpunotifications.php:374
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
