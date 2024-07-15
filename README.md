@@ -7,7 +7,36 @@ Handle user notifications
 ## Roadmap
 
 - [x] Basic CSS
+- [x] Handle notification view.
+- [x] Mark a notification as viewed.
 - [ ] Handle notification expiration.
-- [ ] Handle notification view.
-- [ ] Mark a notification as viewed.
 - [ ] JS Hooks.
+
+## How to
+
+### Display notifications
+
+```php
+do_action('wpunotifications_display_notifications');
+```
+
+### Create a notification
+
+```php
+add_filter('wpunotifications__notifications', function ($notifications) {
+    $notifications[] = array(
+        'message' => 'Hello world',
+        'user_id' => 3,
+        'notif_type' => 'success'
+    );
+    return $notifications;
+});
+```
+
+### Action when a notification is created
+
+```php
+add_action('wpunotifications__notification_created', function ($args) {
+   error_log(json_encode($args));
+});
+```

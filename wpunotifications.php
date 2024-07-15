@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.4.0
+Version: 0.5.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.4.0';
+    private $plugin_version = '0.5.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -35,6 +35,7 @@ class WPUNotifications {
     private $settings_details;
     private $plugin_description;
     private $admin_page_id = 'wpunotifications-notifications';
+    private $messages;
 
     public function __construct() {
         add_action('plugins_loaded', array(&$this, 'plugins_loaded'));
@@ -51,6 +52,9 @@ class WPUNotifications {
 
         # Redirect
         add_action('template_redirect', array(&$this, 'template_redirect'));
+
+        # Hook to create notifications
+        add_action('wp_loaded', array(&$this, 'wpunotifications__notification_creation'), 10, 1);
     }
 
     public function plugins_loaded() {
@@ -175,6 +179,12 @@ class WPUNotifications {
         add_action('wpunotifications__cron_hook', array(&$this,
             'wpunotifications__cron_hook'
         ), 10);
+
+        # MESSAGES
+        if (is_admin()) {
+            require_once __DIR__ . '/inc/WPUBaseMessages/WPUBaseMessages.php';
+            $this->messages = new \wpunotifications\WPUBaseMessages($this->plugin_settings['id']);
+        }
     }
 
     public function wp_enqueue_scripts() {
@@ -277,6 +287,8 @@ class WPUNotifications {
                 'is_read' => 0
             )
         );
+        $this->messages->set_message('wpunotifications_test_notification_created', __('Test notification was sent', 'wpunotifications'), 'updated');
+
     }
 
     /* ----------------------------------------------------------
@@ -400,6 +412,20 @@ class WPUNotifications {
     }
 
     /* ----------------------------------------------------------
+      Create notifications
+    ---------------------------------------------------------- */
+
+    public function wpunotifications__notification_creation() {
+        $notifications = apply_filters('wpunotifications__notifications', array());
+        if (!is_array($notifications)) {
+            return;
+        }
+        foreach ($notifications as $notification) {
+            $this->create_notification($notification);
+        }
+    }
+
+    /* ----------------------------------------------------------
       Getters
     ---------------------------------------------------------- */
 
@@ -433,12 +459,19 @@ class WPUNotifications {
     }
 
     public function create_notification($args = array()) {
-        $defaults = array(
+        /* Create notification */
+        $args = array_merge(array(
             'message' => '',
             'user_id' => get_current_user_id(),
+            'url' => '',
+            'is_read' => 0,
             'notif_type' => 'default'
-        );
-        $this->baseadmindatas->create_line(array_merge($defaults, $args));
+        ), $args);
+        $notif_id = $this->baseadmindatas->create_line($args);
+
+        /* Hook with extra args */
+        $args['notification_url'] = home_url('?wpunotifications_id=' . $notif_id);
+        do_action('wpunotifications__notification_created', $args);
     }
 
 }
