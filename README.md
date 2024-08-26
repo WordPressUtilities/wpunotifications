@@ -20,6 +20,12 @@ Handle user notifications
 do_action('wpunotifications_display_notifications');
 ```
 
+### Display notifications pill
+
+```php
+do_action('wpunotifications_display_notifications_unread_pill');
+```
+
 ### Create a notification
 
 ```php

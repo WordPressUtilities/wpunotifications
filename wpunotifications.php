@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.5.0
+Version: 0.6.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.5.0';
+    private $plugin_version = '0.6.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -49,6 +49,7 @@ class WPUNotifications {
 
         # Front Items
         add_action('wpunotifications_display_notifications', array(&$this, 'wpunotifications_display_notifications'), 10, 2);
+        add_action('wpunotifications_display_notifications_unread_pill', array(&$this, 'get_unread_notifications_pill'), 10, 2);
 
         # Redirect
         add_action('template_redirect', array(&$this, 'template_redirect'));
@@ -66,7 +67,8 @@ class WPUNotifications {
         # TOOLBOX
         require_once __DIR__ . '/inc/WPUBaseToolbox/WPUBaseToolbox.php';
         $this->basetoolbox = new \wpunotifications\WPUBaseToolbox(array(
-            'need_form_js' => false
+            'need_form_js' => false,
+            'plugin_name' => 'WPU Notifications'
         ));
         # CUSTOM PAGE
         $admin_pages = array(
@@ -125,6 +127,11 @@ class WPUNotifications {
                     'type' => 'sql',
                     'sql' => 'TEXT'
                 ),
+                'notif_time' => array(
+                    'public_name' => 'Date',
+                    'type' => 'sql',
+                    'sql' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP'
+                ),
                 'user_id' => array(
                     'public_name' => 'User ID',
                     'type' => 'number'
@@ -162,6 +169,18 @@ class WPUNotifications {
         $this->settings = array(
             'settings__base_css' => array(
                 'label' => __('Enable default CSS', 'wpunotifications'),
+                'type' => 'checkbox',
+                'section' => 'features'
+            ),
+            'settings__display_date' => array(
+                'label' => __('Display date', 'wpunotifications'),
+                'label_check' => __('Display date under notifications', 'wpunotifications'),
+                'type' => 'checkbox',
+                'section' => 'features'
+            ),
+            'settings__display_message_no_notifs' => array(
+                'label_check' => __('Display a message when the user doesn’t have notifications', 'wpunotifications'),
+                'label' => __('Message when no notifications', 'wpunotifications'),
                 'type' => 'checkbox',
                 'section' => 'features'
             )
@@ -362,10 +381,14 @@ class WPUNotifications {
         $notifications = $this->get_user_notifications($args['user_id']);
 
         if (empty($notifications)) {
+            if ($this->settings_obj->get_setting('settings__display_message_no_notifs')) {
+                echo '<div class="wpunotifications-no-notifications">' . wpautop(__('You don’t have notifications for the moment.', 'wpunotifications')) . '</div>';
+            }
             return;
         }
 
         $default_css = $this->settings_obj->get_setting('settings__base_css');
+        $display_date = $this->settings_obj->get_setting('settings__display_date');
 
         echo '<div id="wpunotifications-notifications-list" class="wpunotifications-notifications-list" data-use-default-css="' . esc_attr($default_css) . '">';
         echo '<div class="wpunotifications-notifications">';
@@ -377,15 +400,43 @@ class WPUNotifications {
                 $has_unread = true;
                 echo '<button type="button" class="wpunotifications-mark-notification-as-read wpunotifications-mark-single-notification-as-read" data-mark-notification-as-read="' . $notification->id . '"><span>' . __('Mark as read', 'wpunotifications') . '</span></button>';
             }
-            echo '<p>' . $notification->message . '</p>';
+            echo '<div class="wpunotifications-notification-content">' . wpautop($notification->message) . '</div>';
+            if ($display_date) {
+                echo '<time class="wpunotifications-notification-time" datetime="' . $notification->notif_time . '">' . sprintf(__('%s ago', 'wpunotifications'), human_time_diff(strtotime($notification->notif_time))) . '</time>';
+            }
             echo '</div>';
         }
         echo '</div>';
+        echo '<div class="wpunotifications-notifications__buttons">';
         echo '<button type="button" data-delete-notification="all" class="wpunotifications-delete-notification wpunotifications-delete-all-notifications"><span>' . __('Delete all', 'wpunotifications') . '</span></button>';
         if ($has_unread) {
             echo '<button type="button" data-mark-notification-as-read="all" class="wpunotifications-mark-notification-as-read wpunotifications-mark-all-notifications-as-read"><span>' . __('Mark all as read', 'wpunotifications') . '</span></button>';
         }
         echo '</div>';
+        echo '</div>';
+    }
+
+    public function get_unread_notifications_pill($args) {
+        if (!is_array($args)) {
+            $args = array();
+        }
+        $args = array_merge(array(
+            'user_id' => get_current_user_id()
+        ), $args);
+
+        $notifications = $this->get_user_notifications($args['user_id']);
+
+        $notifications_count = 0;
+        if ($notifications) {
+            foreach ($notifications as $notification) {
+                if (!$notification->is_read) {
+                    $notifications_count++;
+                }
+            }
+        }
+
+        echo '<span class="wpunotifications-unread-notifications-pill" data-unread-notifications-count="' . $notifications_count . '">' . $notifications_count . '</span>';
+
     }
 
     /* ----------------------------------------------------------
@@ -431,7 +482,7 @@ class WPUNotifications {
 
     public function get_user_notifications($user_id) {
         global $wpdb;
-        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d", $user_id);
+        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d ORDER BY notif_time DESC", $user_id);
         return $wpdb->get_results($q);
     }
 
@@ -462,6 +513,7 @@ class WPUNotifications {
         /* Create notification */
         $args = array_merge(array(
             'message' => '',
+            'notif_time' => current_time('mysql', true),
             'user_id' => get_current_user_id(),
             'url' => '',
             'is_read' => 0,

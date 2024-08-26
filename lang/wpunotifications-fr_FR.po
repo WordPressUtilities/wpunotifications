@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPU Notifications\n"
-"POT-Creation-Date: 2024-07-15 18:37+0200\n"
+"POT-Creation-Date: 2024-08-26 17:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -25,80 +25,80 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-8: inc/WPUBaseToolbox\n"
 "X-Poedit-SearchPathExcluded-9: inc/WPUBaseUpdate\n"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:587
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:823
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:588
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:824
 msgid "New Post"
 msgstr "Nouvel article"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:589
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:590
 msgid "Back"
 msgstr "Retour"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:608
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:609
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
 #: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:242
 msgid "No"
 msgstr "Non"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:609
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:610
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:162
 #: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:243
 msgid "Yes"
 msgstr "Oui"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:623
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:624
 #: .././inc/WPUBaseToolbox/WPUBaseToolbox.php:167
 msgid "Submit"
 msgstr "Envoyer"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:784
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:785
 #, php-format
 msgid "Items %s - %s"
 msgstr "Notifications %s - %s"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:798
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:799
 #, php-format
 msgid "<strong>Filter :</strong> %s • <strong>Value :</strong> %s"
 msgstr "<strong>Filtre:</strong> %s • <strong>Valeur :</strong> %s"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:799
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:800
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:809
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:810
 msgid "Search"
 msgstr "Rechercher"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:811
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:812
 msgid "Clear"
 msgstr "Vider"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:870
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:871
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:876
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:877
 msgid "Edit"
 msgstr "Modifier"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:876
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:877
 msgid "View"
 msgstr "Voir"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:884
-#: .././wpunotifications.php:375
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:885
+#: .././wpunotifications.php:397
 msgid "Delete"
 msgstr "Supprimer"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:886
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:887
 msgid "Delete filtered lines"
 msgstr "Supprimer les lignes filtrées"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:897
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:898
 msgid "Export all"
 msgstr "Tout exporter"
 
-#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:899
+#: .././inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php:900
 msgid "Export filtered view"
 msgstr "Exporter la vue filtrée"
 
@@ -109,7 +109,7 @@ msgstr "Aide"
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:132
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:615
 #: .././inc/WPUBaseSettings/WPUBaseSettings.php:622
-#: .././wpunotifications.php:86 .././wpunotifications.php:88
+#: .././wpunotifications.php:87 .././wpunotifications.php:89
 msgid "Settings"
 msgstr "Réglages"
 
@@ -155,78 +155,103 @@ msgstr "Le champ « %s » est obligatoire"
 msgid "The field “%s” should be an email"
 msgstr "Le champ « %s » doit être un e-mail"
 
-#: .././wpunotifications.php:65
+#: .././wpunotifications.php:66
 msgid "Handle user notifications"
 msgstr "Gére les notifications des utilisateurs"
 
-#: .././wpunotifications.php:96
+#: .././wpunotifications.php:97
 msgid "Notifications"
 msgstr "Notifications"
 
-#: .././wpunotifications.php:158
+#: .././wpunotifications.php:164
 msgid "Features"
 msgstr "Fonctionnalités"
 
-#: .././wpunotifications.php:164
+#: .././wpunotifications.php:170
 msgid "Enable default CSS"
 msgstr "Activer le CSS par défaut"
 
-#: .././wpunotifications.php:236
+#: .././wpunotifications.php:175
+msgid "Display date"
+msgstr "Afficher la date"
+
+#: .././wpunotifications.php:176
+msgid "Display date under notifications"
+msgstr "Afficher la date sous les notifications"
+
+#: .././wpunotifications.php:181
+msgid "Display a message when the user doesn’t have notifications"
+msgstr "Afficher un message lorsque l’utilisateur n’a pas de notifications"
+
+#: .././wpunotifications.php:182
+msgid "Message when no notifications"
+msgstr "Message en l’absence de notifications"
+
+#: .././wpunotifications.php:254
 msgid "Send a notification"
 msgstr "Envoyer une notification"
 
-#: .././wpunotifications.php:242 .././wpunotifications.php:325
+#: .././wpunotifications.php:260 .././wpunotifications.php:343
 msgid "Message"
 msgstr "Message"
 
-#: .././wpunotifications.php:247
+#: .././wpunotifications.php:265
 msgid "User ID"
 msgstr "ID de l’utilisateur"
 
-#: .././wpunotifications.php:252
+#: .././wpunotifications.php:270
 msgid "Notification type"
 msgstr "Type de notification"
 
-#: .././wpunotifications.php:257
+#: .././wpunotifications.php:275
 msgid "URL"
 msgstr "URL"
 
-#: .././wpunotifications.php:290
+#: .././wpunotifications.php:308
 msgid "Test notification was sent"
 msgstr "Une notification de test a été envoyée"
 
-#: .././wpunotifications.php:303
+#: .././wpunotifications.php:321
 msgid "Save Changes"
 msgstr "Sauvegarder"
 
-#: .././wpunotifications.php:320
+#: .././wpunotifications.php:338
 msgid "ID"
 msgstr "ID"
 
-#: .././wpunotifications.php:321
+#: .././wpunotifications.php:339
 msgid "Date"
 msgstr "Date"
 
-#: .././wpunotifications.php:322
+#: .././wpunotifications.php:340
 msgid "Account"
 msgstr "Compte"
 
-#: .././wpunotifications.php:323
+#: .././wpunotifications.php:341
 msgid "Notif type"
 msgstr "Type de notif"
 
-#: .././wpunotifications.php:324
+#: .././wpunotifications.php:342
 msgid "Read"
 msgstr "Lu"
 
-#: .././wpunotifications.php:378
+#: .././wpunotifications.php:384
+msgid "You don’t have notifications for the moment."
+msgstr "Vous n’avez pas de notifications pour le moment."
+
+#: .././wpunotifications.php:400
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: .././wpunotifications.php:384
+#: .././wpunotifications.php:404
+#, php-format
+msgid "%s ago"
+msgstr "il y a %s"
+
+#: .././wpunotifications.php:410
 msgid "Delete all"
 msgstr "Supprimer tout"
 
-#: .././wpunotifications.php:386
+#: .././wpunotifications.php:412
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"

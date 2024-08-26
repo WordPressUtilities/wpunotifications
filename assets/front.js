@@ -2,6 +2,17 @@
 document.addEventListener("DOMContentLoaded", function() {
     'use strict';
 
+
+    function update_notifications_count(_count) {
+        if(_count < 0) {
+            _count = document.querySelectorAll('#wpunotifications-notifications-list [data-is-read="0"]').length;
+        }
+        Array.prototype.forEach.call(document.querySelectorAll('[data-unread-notifications-count]'), function($pill) {
+            $pill.setAttribute('data-unread-notifications-count', _count);
+            $pill.innerText = _count;
+        });
+    }
+
     var $delete_notifications = document.querySelectorAll('[data-delete-notification]');
     Array.prototype.forEach.call($delete_notifications, function(el) {
         el.addEventListener('click', function() {
@@ -14,9 +25,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     var notificationElement = document.querySelector('#wpunotifications-notification-' + _id);
                     if (_id == 'all') {
                         notificationElement = document.querySelector('#wpunotifications-notifications-list');
+                        update_notifications_count(0);
                     }
                     if (notificationElement) {
                         notificationElement.remove();
+                        update_notifications_count(-1);
                     }
                 }
             });
@@ -41,13 +54,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     Array.prototype.forEach.call(document.querySelectorAll('#wpunotifications-notifications-list [data-mark-notification-as-read]'), function(el) {
                         el.remove();
                     });
+                    update_notifications_count(0);
                 } else {
                     var _item = document.querySelector('#wpunotifications-notification-' + _id);
                     _item.setAttribute('data-is-read', '1');
                     _item.querySelector('[data-mark-notification-as-read]').remove();
+                    update_notifications_count(-1);
                 }
             });
         });
     });
-
 });
