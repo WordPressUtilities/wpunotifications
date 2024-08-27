@@ -2,7 +2,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     'use strict';
 
-
     function update_notifications_count(_count) {
         if(_count < 0) {
             _count = document.querySelectorAll('#wpunotifications-notifications-list [data-is-read="0"]').length;
@@ -11,6 +10,10 @@ document.addEventListener("DOMContentLoaded", function() {
             $pill.setAttribute('data-unread-notifications-count', _count);
             $pill.innerText = _count;
         });
+
+        if (_count == 0) {
+            document.querySelector('[data-mark-notification-as-read="all"]').remove();
+        }
     }
 
     var $delete_notifications = document.querySelectorAll('[data-delete-notification]');

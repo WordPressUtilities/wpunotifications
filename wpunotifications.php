@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.6.0
+Version: 0.7.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.6.0';
+    private $plugin_version = '0.7.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -56,6 +56,9 @@ class WPUNotifications {
 
         # Hook to create notifications
         add_action('wp_loaded', array(&$this, 'wpunotifications__notification_creation'), 10, 1);
+
+        # Hook to handle links
+        add_action('wp', array(&$this, 'wpunotifications__handle_links'), 10, 1);
     }
 
     public function plugins_loaded() {
@@ -250,6 +253,27 @@ class WPUNotifications {
 
     }
 
+    public function wpunotifications__handle_links() {
+        if (!isset($_GET['wpunotifications_link_id']) || !is_numeric($_GET['wpunotifications_link_id'])) {
+            return;
+        }
+        if (!is_user_logged_in()) {
+            return;
+        }
+        global $wpdb;
+        $table = $wpdb->prefix . $this->plugin_settings['id'];
+        $notification = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d and user_id=%d", $_GET['wpunotifications_link_id'], get_current_user_id()));
+
+        if (!$notification || !$notification->url) {
+            return;
+        }
+
+        $wpdb->update($table, array('is_read' => 1), array('id' => $notification->id));
+
+        wp_redirect($notification->url);
+        exit;
+    }
+
     public function page_content__main() {
 
         echo '<h2>' . __('Send a notification', 'wpunotifications') . '</h2>';
@@ -400,7 +424,12 @@ class WPUNotifications {
                 $has_unread = true;
                 echo '<button type="button" class="wpunotifications-mark-notification-as-read wpunotifications-mark-single-notification-as-read" data-mark-notification-as-read="' . $notification->id . '"><span>' . __('Mark as read', 'wpunotifications') . '</span></button>';
             }
-            echo '<div class="wpunotifications-notification-content">' . wpautop($notification->message) . '</div>';
+            $message = $notification->message;
+            if ($notification->url) {
+                $notification_url = home_url('?wpunotifications_link_id=' . $notification->id);
+                $message = '<a data-mark-notification-as-read="' . $notification->id . '" target="_blank" href="' . $notification_url . '">' . $message . '</a>';
+            }
+            echo '<div class="wpunotifications-notification-content">' . wpautop($message) . '</div>';
             if ($display_date) {
                 echo '<time class="wpunotifications-notification-time" datetime="' . $notification->notif_time . '">' . sprintf(__('%s ago', 'wpunotifications'), human_time_diff(strtotime($notification->notif_time))) . '</time>';
             }
