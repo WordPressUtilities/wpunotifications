@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.7.0
+Version: 0.8.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.7.0';
+    private $plugin_version = '0.8.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -404,11 +404,8 @@ class WPUNotifications {
 
         $notifications = $this->get_user_notifications($args['user_id']);
 
-        if (empty($notifications)) {
-            if ($this->settings_obj->get_setting('settings__display_message_no_notifs')) {
-                echo '<div class="wpunotifications-no-notifications">' . wpautop(__('You don’t have notifications for the moment.', 'wpunotifications')) . '</div>';
-            }
-            return;
+        if ($this->settings_obj->get_setting('settings__display_message_no_notifs')) {
+            echo '<div class="wpunotifications-no-notifications">' . wpautop(__('You don’t have notifications for the moment.', 'wpunotifications')) . '</div>';
         }
 
         $default_css = $this->settings_obj->get_setting('settings__base_css');
@@ -438,9 +435,7 @@ class WPUNotifications {
         echo '</div>';
         echo '<div class="wpunotifications-notifications__buttons">';
         echo '<button type="button" data-delete-notification="all" class="wpunotifications-delete-notification wpunotifications-delete-all-notifications"><span>' . __('Delete all', 'wpunotifications') . '</span></button>';
-        if ($has_unread) {
-            echo '<button type="button" data-mark-notification-as-read="all" class="wpunotifications-mark-notification-as-read wpunotifications-mark-all-notifications-as-read"><span>' . __('Mark all as read', 'wpunotifications') . '</span></button>';
-        }
+        echo '<button type="button" data-mark-notification-as-read="all" class="wpunotifications-mark-notification-as-read wpunotifications-mark-all-notifications-as-read"><span>' . __('Mark all as read', 'wpunotifications') . '</span></button>';
         echo '</div>';
         echo '</div>';
     }

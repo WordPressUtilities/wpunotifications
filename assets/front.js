@@ -2,19 +2,32 @@
 document.addEventListener("DOMContentLoaded", function() {
     'use strict';
 
-    function update_notifications_count(_count) {
-        if(_count < 0) {
-            _count = document.querySelectorAll('#wpunotifications-notifications-list [data-is-read="0"]').length;
-        }
+    function update_notifications_count() {
+        var $wrapper = document.querySelector('#wpunotifications-notifications-list'),
+            $no_notifs = document.querySelector('.wpunotifications-no-notifications'),
+            _count_total = $wrapper ? $wrapper.querySelectorAll('[data-is-read]').length : 0,
+            _count_unread = $wrapper ? $wrapper.querySelectorAll('[data-is-read="0"]').length : 0;
+
         Array.prototype.forEach.call(document.querySelectorAll('[data-unread-notifications-count]'), function($pill) {
-            $pill.setAttribute('data-unread-notifications-count', _count);
-            $pill.innerText = _count;
+            $pill.setAttribute('data-unread-notifications-count', _count_unread);
+            $pill.innerText = _count_unread;
         });
 
-        if (_count == 0) {
-            document.querySelector('[data-mark-notification-as-read="all"]').remove();
+        if (_count_unread == 0) {
+            document.querySelector('[data-mark-notification-as-read="all"]').style.display = 'none';
+        }
+
+        if ($no_notifs) {
+            $no_notifs.style.display = 'none';
+        }
+        if (_count_total == 0) {
+            document.querySelector('[data-delete-notification="all"]').style.display = 'none';
+            if ($no_notifs) {
+                $no_notifs.style.display = '';
+            }
         }
     }
+    update_notifications_count();
 
     var $delete_notifications = document.querySelectorAll('[data-delete-notification]');
     Array.prototype.forEach.call($delete_notifications, function(el) {
@@ -28,11 +41,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     var notificationElement = document.querySelector('#wpunotifications-notification-' + _id);
                     if (_id == 'all') {
                         notificationElement = document.querySelector('#wpunotifications-notifications-list');
-                        update_notifications_count(0);
+                        update_notifications_count();
                     }
                     if (notificationElement) {
                         notificationElement.remove();
-                        update_notifications_count(-1);
+                        update_notifications_count();
                     }
                 }
             });
@@ -57,12 +70,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     Array.prototype.forEach.call(document.querySelectorAll('#wpunotifications-notifications-list [data-mark-notification-as-read]'), function(el) {
                         el.remove();
                     });
-                    update_notifications_count(0);
+                    update_notifications_count();
                 } else {
                     var _item = document.querySelector('#wpunotifications-notification-' + _id);
                     _item.setAttribute('data-is-read', '1');
                     _item.querySelector('[data-mark-notification-as-read]').remove();
-                    update_notifications_count(-1);
+                    update_notifications_count();
                 }
             });
         });
