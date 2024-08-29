@@ -72,10 +72,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                     update_notifications_count();
                 } else {
-                    var _item = document.querySelector('#wpunotifications-notification-' + _id);
+                    var _item = document.querySelector('#wpunotifications-notification-' + _id),
+                        $btn = _item.querySelector('button[data-mark-notification-as-read]');
                     _item.setAttribute('data-is-read', '1');
-                    _item.querySelector('[data-mark-notification-as-read]').remove();
-                    update_notifications_count();
+                    if ($btn){
+                        $btn.remove();
+                    }
                 }
             });
         });

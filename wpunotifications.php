@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.8.0
+Version: 0.8.1
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.8.0';
+    private $plugin_version = '0.8.1';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -423,7 +423,7 @@ class WPUNotifications {
             }
             $message = $notification->message;
             if ($notification->url) {
-                $notification_url = home_url('?wpunotifications_link_id=' . $notification->id);
+                $notification_url = $this->get_notification_url($notification);
                 $message = '<a data-mark-notification-as-read="' . $notification->id . '" target="_blank" href="' . $notification_url . '">' . $message . '</a>';
             }
             echo '<div class="wpunotifications-notification-content">' . wpautop($message) . '</div>';
@@ -510,6 +510,13 @@ class WPUNotifications {
         return $wpdb->get_results($q);
     }
 
+    function get_notification_url($notification) {
+        if(is_object($notification)){
+            $notification = (array) $notification;
+        }
+        return home_url('?wpunotifications_id=' . $notification['id']);
+    }
+
     /* ----------------------------------------------------------
       CRUD
     ---------------------------------------------------------- */
@@ -546,7 +553,8 @@ class WPUNotifications {
         $notif_id = $this->baseadmindatas->create_line($args);
 
         /* Hook with extra args */
-        $args['notification_url'] = home_url('?wpunotifications_id=' . $notif_id);
+        $args['id'] = $notif_id;
+        $args['notification_url'] = ($args['url'] && filter_var($args['url'], FILTER_VALIDATE_URL)) ? $this->get_notification_url($args) : '';
         do_action('wpunotifications__notification_created', $args);
     }
 
