@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.8.1
+Version: 0.8.2
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.8.1';
+    private $plugin_version = '0.8.2';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -119,40 +119,43 @@ class WPUNotifications {
         require_once __DIR__ . '/inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php';
         $this->baseadmindatas = new \wpunotifications\WPUBaseAdminDatas();
 
+        $table_fields = array(
+            'message' => array(
+                'public_name' => 'Message',
+                'type' => 'sql',
+                'sql' => 'TEXT'
+            ),
+            'notif_time' => array(
+                'public_name' => 'Date',
+                'type' => 'sql',
+                'sql' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP'
+            ),
+            'user_id' => array(
+                'public_name' => 'User ID',
+                'type' => 'number'
+            ),
+            'notif_type' => array(
+                'public_name' => 'Notification type',
+                'type' => 'varchar'
+            ),
+            'is_read' => array(
+                'public_name' => 'Is read',
+                'type' => 'sql',
+                'sql' => 'TINYINT UNSIGNED NOT NULL DEFAULT 0'
+            ),
+            'url' => array(
+                'public_name' => 'URL',
+                'type' => 'sql',
+                'sql' => 'TEXT'
+            )
+        );
+
         $this->baseadmindatas->init(array(
             'handle_database' => false,
             'plugin_id' => $this->plugin_settings['id'],
             'plugin_pageid' => $this->admin_page_id,
             'table_name' => $this->plugin_settings['id'],
-            'table_fields' => array(
-                'message' => array(
-                    'public_name' => 'Message',
-                    'type' => 'sql',
-                    'sql' => 'TEXT'
-                ),
-                'notif_time' => array(
-                    'public_name' => 'Date',
-                    'type' => 'sql',
-                    'sql' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP'
-                ),
-                'user_id' => array(
-                    'public_name' => 'User ID',
-                    'type' => 'number'
-                ),
-                'notif_type' => array(
-                    'public_name' => 'Notification type',
-                    'type' => 'varchar'
-                ),
-                'is_read' => array(
-                    'public_name' => 'Is read',
-                    'type' => 'number'
-                ),
-                'url' => array(
-                    'public_name' => 'URL',
-                    'type' => 'sql',
-                    'sql' => 'TEXT'
-                )
-            )
+            'table_fields' => apply_filters('wpunotifications__table_fields', $table_fields)
         ));
         # SETTINGS
         $this->settings_details = array(
@@ -505,13 +508,23 @@ class WPUNotifications {
     ---------------------------------------------------------- */
 
     public function get_user_notifications($user_id) {
-        global $wpdb;
-        $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d ORDER BY notif_time DESC", $user_id);
-        return $wpdb->get_results($q);
+
+        $cache_id = 'wpunotifications_user_notification_' . $user_id;
+        $cache_duration = 5;
+
+        $notifications = wp_cache_get($cache_id);
+        if ($notifications === false) {
+            global $wpdb;
+            $q = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}{$this->plugin_settings['id']} WHERE user_id = %d ORDER BY notif_time DESC", $user_id);
+            $notifications = $wpdb->get_results($q);
+            wp_cache_set($cache_id, $notifications, '', $cache_duration);
+        }
+
+        return $notifications;
     }
 
-    function get_notification_url($notification) {
-        if(is_object($notification)){
+    public function get_notification_url($notification) {
+        if (is_object($notification)) {
             $notification = (array) $notification;
         }
         return home_url('?wpunotifications_id=' . $notification['id']);
