@@ -7,6 +7,7 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 /* Delete options */
 $options = array(
     'wpunotifications_options',
+    'wpunotifications__cron_hook_lastexec',
     'wpunotifications__cron_hook_croninterval',
     'wpunotifications_wpunotifications_version'
 );

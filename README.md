@@ -9,7 +9,7 @@ Handle user notifications
 - [x] Basic CSS
 - [x] Handle notification view.
 - [x] Mark a notification as viewed.
-- [ ] Handle notification expiration.
+- [x] Handle notification expiration.
 - [ ] JS Hooks.
 
 ## How to

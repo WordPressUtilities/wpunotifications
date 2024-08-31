@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.8.2
+Version: 0.9.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.8.2';
+    private $plugin_version = '0.9.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -189,6 +189,12 @@ class WPUNotifications {
                 'label' => __('Message when no notifications', 'wpunotifications'),
                 'type' => 'checkbox',
                 'section' => 'features'
+            ),
+            'settings__delete_old_notifications' => array(
+                'label' => __('Delete old notifications', 'wpunotifications'),
+                'label_check' => __('Delete notifications older than 3 months', 'wpunotifications'),
+                'type' => 'checkbox',
+                'section' => 'features'
             )
         );
         require_once __DIR__ . '/inc/WPUBaseSettings/WPUBaseSettings.php';
@@ -254,6 +260,12 @@ class WPUNotifications {
 
     public function wpunotifications__cron_hook() {
 
+        /* Delete notifications older than 3 months */
+        if ($this->settings_obj->get_setting('settings__delete_old_notifications')) {
+            global $wpdb;
+            $table = $wpdb->prefix . $this->plugin_settings['id'];
+            $wpdb->query($wpdb->prepare("DELETE FROM $table WHERE notif_time < %s", date('Y-m-d H:i:s', strtotime('-3 months'))));
+        }
     }
 
     public function wpunotifications__handle_links() {
