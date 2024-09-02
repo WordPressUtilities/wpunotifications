@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.9.0
+Version: 0.9.1
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,11 +21,12 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.9.0';
+    private $plugin_version = '0.9.1';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
     );
+    private $table_name = 'wpunotifications';
     private $basetoolbox;
     private $basecron;
     private $adminpages;
@@ -56,6 +57,7 @@ class WPUNotifications {
 
         # Hook to create notifications
         add_action('wp_loaded', array(&$this, 'wpunotifications__notification_creation'), 10, 1);
+        add_action('wpunotifications__create_single_notification', array(&$this, 'wpunotifications__create_single_notification'), 10, 1);
 
         # Hook to handle links
         add_action('wp', array(&$this, 'wpunotifications__handle_links'), 10, 1);
@@ -138,6 +140,10 @@ class WPUNotifications {
                 'public_name' => 'Notification type',
                 'type' => 'varchar'
             ),
+            'unique_id' => array(
+                'public_name' => 'unique_id',
+                'type' => 'varchar'
+            ),
             'is_read' => array(
                 'public_name' => 'Is read',
                 'type' => 'sql',
@@ -154,7 +160,7 @@ class WPUNotifications {
             'handle_database' => false,
             'plugin_id' => $this->plugin_settings['id'],
             'plugin_pageid' => $this->admin_page_id,
-            'table_name' => $this->plugin_settings['id'],
+            'table_name' => $this->table_name,
             'table_fields' => apply_filters('wpunotifications__table_fields', $table_fields)
         ));
         # SETTINGS
@@ -263,8 +269,7 @@ class WPUNotifications {
         /* Delete notifications older than 3 months */
         if ($this->settings_obj->get_setting('settings__delete_old_notifications')) {
             global $wpdb;
-            $table = $wpdb->prefix . $this->plugin_settings['id'];
-            $wpdb->query($wpdb->prepare("DELETE FROM $table WHERE notif_time < %s", date('Y-m-d H:i:s', strtotime('-3 months'))));
+            $wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}{$this->table_name} WHERE notif_time < %s", date('Y-m-d H:i:s', strtotime('-3 months'))));
         }
     }
 
@@ -276,7 +281,7 @@ class WPUNotifications {
             return;
         }
         global $wpdb;
-        $table = $wpdb->prefix . $this->plugin_settings['id'];
+        $table = $wpdb->prefix . $this->table_name;
         $notification = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d and user_id=%d", $_GET['wpunotifications_link_id'], get_current_user_id()));
 
         if (!$notification || !$notification->url) {
@@ -515,6 +520,10 @@ class WPUNotifications {
         }
     }
 
+    public function wpunotifications__create_single_notification($args) {
+        $this->create_notification($args);
+    }
+
     /* ----------------------------------------------------------
       Getters
     ---------------------------------------------------------- */
@@ -549,7 +558,7 @@ class WPUNotifications {
     public function read_or_delete_notification($notification_id, $action_type) {
         global $wpdb;
         $user_id = get_current_user_id();
-        $table = $wpdb->prefix . $this->plugin_settings['id'];
+        $table = $wpdb->prefix . $this->table_name;
         if ($notification_id == 'all') {
             if ($action_type == 'delete') {
                 $wpdb->delete($table, array('user_id' => $user_id));
@@ -572,9 +581,21 @@ class WPUNotifications {
             'notif_time' => current_time('mysql', true),
             'user_id' => get_current_user_id(),
             'url' => '',
+            'unique_id' => '',
             'is_read' => 0,
             'notif_type' => 'default'
         ), $args);
+
+        if($args['unique_id']) {
+            global $wpdb;
+            $table = $wpdb->prefix . $this->table_name;
+            $notification = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE unique_id = %s", $args['unique_id']));
+            if ($notification) {
+                do_action('wpunotifications__notification_already_exists', $args);
+                return;
+            }
+        }
+
         $notif_id = $this->baseadmindatas->create_line($args);
 
         /* Hook with extra args */
