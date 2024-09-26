@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.9.1
+Version: 0.10.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.9.1';
+    private $plugin_version = '0.10.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -61,6 +61,9 @@ class WPUNotifications {
 
         # Hook to handle links
         add_action('wp', array(&$this, 'wpunotifications__handle_links'), 10, 1);
+
+        # When an user is deleted
+        add_action('delete_user', array(&$this, 'delete_user'), 10, 1);
     }
 
     public function plugins_loaded() {
@@ -496,7 +499,7 @@ class WPUNotifications {
         }
         global $wpdb;
         $user_id = get_current_user_id();
-        $table = $wpdb->prefix . $this->plugin_settings['id'];
+        $table = $wpdb->prefix . $this->table_name;
         $notification = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d and user_id=%d", $_GET['wpunotifications_id'], $user_id));
         if (!$notification || !$notification->url) {
             return;
@@ -504,6 +507,18 @@ class WPUNotifications {
         $wpdb->update($table, array('is_read' => 1), array('id' => $notification->id));
         wp_redirect($notification->url);
         exit;
+    }
+
+    /* ----------------------------------------------------------
+      Delete user
+    ---------------------------------------------------------- */
+
+    /**
+     * Deleting all notifications when an user is deleted
+     */
+    public function delete_user($user_id) {
+        global $wpdb;
+        $wpdb->delete($wpdb->prefix . $this->table_name, array('user_id' => $user_id));
     }
 
     /* ----------------------------------------------------------

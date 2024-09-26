@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function() {
     function update_notifications_count() {
         var $wrapper = document.querySelector('#wpunotifications-notifications-list'),
             $no_notifs = document.querySelector('.wpunotifications-no-notifications'),
+            $read_all = document.querySelector('[data-mark-notification-as-read="all"]'),
+            $delete_all = document.querySelector('[data-delete-notification="all"]'),
             _count_total = $wrapper ? $wrapper.querySelectorAll('[data-is-read]').length : 0,
             _count_unread = $wrapper ? $wrapper.querySelectorAll('[data-is-read="0"]').length : 0;
 
@@ -13,15 +15,17 @@ document.addEventListener("DOMContentLoaded", function() {
             $pill.innerText = _count_unread;
         });
 
-        if (_count_unread == 0) {
-            document.querySelector('[data-mark-notification-as-read="all"]').style.display = 'none';
+        if (_count_unread == 0 && $read_all) {
+            $read_all.style.display = 'none';
         }
 
         if ($no_notifs) {
             $no_notifs.style.display = 'none';
         }
         if (_count_total == 0) {
-            document.querySelector('[data-delete-notification="all"]').style.display = 'none';
+            if ($delete_all) {
+                $delete_all.style.display = 'none';
+            }
             if ($no_notifs) {
                 $no_notifs.style.display = '';
             }
@@ -75,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     var _item = document.querySelector('#wpunotifications-notification-' + _id),
                         $btn = _item.querySelector('button[data-mark-notification-as-read]');
                     _item.setAttribute('data-is-read', '1');
-                    if ($btn){
+                    if ($btn) {
                         $btn.remove();
                     }
                 }
