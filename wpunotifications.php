@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.10.0
+Version: 0.10.1
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.10.0';
+    private $plugin_version = '0.10.1';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -447,7 +447,7 @@ class WPUNotifications {
             $message = $notification->message;
             if ($notification->url) {
                 $notification_url = $this->get_notification_url($notification);
-                $message = '<a data-mark-notification-as-read="' . $notification->id . '" target="_blank" href="' . $notification_url . '">' . $message . '</a>';
+                $message = '<a data-mark-notification-as-read="' . $notification->id . '" href="' . $notification_url . '">' . $message . '</a>';
             }
             echo '<div class="wpunotifications-notification-content">' . wpautop($message) . '</div>';
             if ($display_date) {
