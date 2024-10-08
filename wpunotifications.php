@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.10.1
+Version: 0.10.2
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.10.1';
+    private $plugin_version = '0.10.2';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'

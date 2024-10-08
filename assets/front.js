@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     Array.prototype.forEach.call(document.querySelectorAll('#wpunotifications-notifications-list [data-is-read]'), function(el) {
                         el.setAttribute('data-is-read', '1');
                     });
-                    Array.prototype.forEach.call(document.querySelectorAll('#wpunotifications-notifications-list [data-mark-notification-as-read]'), function(el) {
+                    Array.prototype.forEach.call(document.querySelectorAll('#wpunotifications-notifications-list button[data-mark-notification-as-read]'), function(el) {
                         el.remove();
                     });
                     update_notifications_count();
