@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.10.2
+Version: 0.11.0
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.10.2';
+    private $plugin_version = '0.11.0';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -40,6 +40,7 @@ class WPUNotifications {
 
     public function __construct() {
         add_action('plugins_loaded', array(&$this, 'plugins_loaded'));
+        add_action('init', array(&$this, 'load_translation'));
 
         # Front Assets
         add_action('wp_enqueue_scripts', array(&$this, 'wp_enqueue_scripts'));
@@ -66,12 +67,18 @@ class WPUNotifications {
         add_action('delete_user', array(&$this, 'delete_user'), 10, 1);
     }
 
-    public function plugins_loaded() {
-        # TRANSLATION
-        if (!load_plugin_textdomain('wpunotifications', false, dirname(plugin_basename(__FILE__)) . '/lang/')) {
-            load_muplugin_textdomain('wpunotifications', dirname(plugin_basename(__FILE__)) . '/lang/');
+    # Load translation
+    public function load_translation() {
+        $lang_dir = dirname(plugin_basename(__FILE__)) . '/lang/';
+        if (strpos(__DIR__, 'mu-plugins') !== false) {
+            load_muplugin_textdomain('wpunotifications', $lang_dir);
+        } else {
+            load_plugin_textdomain('wpunotifications', false, $lang_dir);
         }
         $this->plugin_description = __('Handle user notifications', 'wpunotifications');
+    }
+
+    public function plugins_loaded() {
         # TOOLBOX
         require_once __DIR__ . '/inc/WPUBaseToolbox/WPUBaseToolbox.php';
         $this->basetoolbox = new \wpunotifications\WPUBaseToolbox(array(
@@ -208,6 +215,10 @@ class WPUNotifications {
         );
         require_once __DIR__ . '/inc/WPUBaseSettings/WPUBaseSettings.php';
         $this->settings_obj = new \wpunotifications\WPUBaseSettings($this->settings_details, $this->settings);
+        if (isset($_GET['page']) && $_GET['page'] == 'wpunotifications-settings') {
+            add_action('admin_init', array(&$this->settings_obj, 'load_assets'));
+        }
+
         /* Include hooks */
         require_once __DIR__ . '/inc/WPUBaseCron/WPUBaseCron.php';
         $this->basecron = new \wpunotifications\WPUBaseCron(array(
@@ -601,7 +612,7 @@ class WPUNotifications {
             'notif_type' => 'default'
         ), $args);
 
-        if($args['unique_id']) {
+        if ($args['unique_id']) {
             global $wpdb;
             $table = $wpdb->prefix . $this->table_name;
             $notification = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE unique_id = %s", $args['unique_id']));
