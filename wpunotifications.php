@@ -4,7 +4,7 @@ Plugin Name: WPU Notifications
 Plugin URI: https://github.com/WordPressUtilities/wpunotifications
 Update URI: https://github.com/WordPressUtilities/wpunotifications
 Description: Handle user notifications
-Version: 0.11.0
+Version: 0.11.1
 Author: Darklg
 Author URI: https://darklg.me/
 Text Domain: wpunotifications
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 class WPUNotifications {
-    private $plugin_version = '0.11.0';
+    private $plugin_version = '0.11.1';
     private $plugin_settings = array(
         'id' => 'wpunotifications',
         'name' => 'WPU Notifications'
@@ -41,6 +41,8 @@ class WPUNotifications {
     public function __construct() {
         add_action('plugins_loaded', array(&$this, 'plugins_loaded'));
         add_action('init', array(&$this, 'load_translation'));
+        add_action('init', array(&$this, 'init_pages'));
+        add_action('init', array(&$this, 'init_settings'));
 
         # Front Assets
         add_action('wp_enqueue_scripts', array(&$this, 'wp_enqueue_scripts'));
@@ -85,48 +87,7 @@ class WPUNotifications {
             'need_form_js' => false,
             'plugin_name' => 'WPU Notifications'
         ));
-        # CUSTOM PAGE
-        $admin_pages = array(
-            'main' => array(
-                'icon_url' => 'dashicons-warning',
-                'menu_name' => $this->plugin_settings['name'],
-                'name' => $this->plugin_settings['name'],
-                'function_content' => array(&$this,
-                    'page_content__main'
-                ),
-                'function_action' => array(&$this,
-                    'page_action__main'
-                )
-            ),
-            'settings' => array(
-                'parent' => 'main',
-                'name' => __('Settings', 'wpunotifications'),
-                'settings_link' => true,
-                'settings_name' => __('Settings', 'wpunotifications'),
-                'has_form' => false,
-                'function_content' => array(&$this,
-                    'page_content__settings'
-                )
-            ),
-            'notifications' => array(
-                'parent' => 'main',
-                'name' => __('Notifications', 'wpunotifications'),
-                'has_form' => false,
-                'function_content' => array(&$this,
-                    'page_content__notifications'
-                )
-            )
 
-        );
-        $pages_options = array(
-            'id' => $this->plugin_settings['id'],
-            'level' => 'manage_options',
-            'basename' => plugin_basename(__FILE__)
-        );
-        // Init admin page
-        require_once __DIR__ . '/inc/WPUBaseAdminPage/WPUBaseAdminPage.php';
-        $this->adminpages = new \wpunotifications\WPUBaseAdminPage();
-        $this->adminpages->init($pages_options, $admin_pages);
         # CUSTOM TABLE
         require_once __DIR__ . '/inc/WPUBaseAdminDatas/WPUBaseAdminDatas.php';
         $this->baseadmindatas = new \wpunotifications\WPUBaseAdminDatas();
@@ -173,7 +134,73 @@ class WPUNotifications {
             'table_name' => $this->table_name,
             'table_fields' => apply_filters('wpunotifications__table_fields', $table_fields)
         ));
-        # SETTINGS
+
+        /* Include hooks */
+        require_once __DIR__ . '/inc/WPUBaseCron/WPUBaseCron.php';
+        $this->basecron = new \wpunotifications\WPUBaseCron(array(
+            'pluginname' => $this->plugin_settings['name'],
+            'cronhook' => 'wpunotifications__cron_hook',
+            'croninterval' => 3600
+        ));
+        /* Callback when hook is triggered by the cron */
+        add_action('wpunotifications__cron_hook', array(&$this,
+            'wpunotifications__cron_hook'
+        ), 10);
+
+        # MESSAGES
+        if (is_admin()) {
+            require_once __DIR__ . '/inc/WPUBaseMessages/WPUBaseMessages.php';
+            $this->messages = new \wpunotifications\WPUBaseMessages($this->plugin_settings['id']);
+        }
+    }
+
+    # CUSTOM PAGE
+    public function init_pages() {
+        $admin_pages = array(
+            'main' => array(
+                'icon_url' => 'dashicons-warning',
+                'menu_name' => $this->plugin_settings['name'],
+                'name' => $this->plugin_settings['name'],
+                'function_content' => array(&$this,
+                    'page_content__main'
+                ),
+                'function_action' => array(&$this,
+                    'page_action__main'
+                )
+            ),
+            'settings' => array(
+                'parent' => 'main',
+                'name' => __('Settings', 'wpunotifications'),
+                'settings_link' => true,
+                'settings_name' => __('Settings', 'wpunotifications'),
+                'has_form' => false,
+                'function_content' => array(&$this,
+                    'page_content__settings'
+                )
+            ),
+            'notifications' => array(
+                'parent' => 'main',
+                'name' => __('Notifications', 'wpunotifications'),
+                'has_form' => false,
+                'function_content' => array(&$this,
+                    'page_content__notifications'
+                )
+            )
+
+        );
+        $pages_options = array(
+            'id' => $this->plugin_settings['id'],
+            'level' => 'manage_options',
+            'basename' => plugin_basename(__FILE__)
+        );
+        // Init admin page
+        require_once __DIR__ . '/inc/WPUBaseAdminPage/WPUBaseAdminPage.php';
+        $this->adminpages = new \wpunotifications\WPUBaseAdminPage();
+        $this->adminpages->init($pages_options, $admin_pages);
+    }
+
+    # SETTINGS
+    public function init_settings() {
         $this->settings_details = array(
             # Admin page
             'create_page' => true,
@@ -219,23 +246,6 @@ class WPUNotifications {
             add_action('admin_init', array(&$this->settings_obj, 'load_assets'));
         }
 
-        /* Include hooks */
-        require_once __DIR__ . '/inc/WPUBaseCron/WPUBaseCron.php';
-        $this->basecron = new \wpunotifications\WPUBaseCron(array(
-            'pluginname' => $this->plugin_settings['name'],
-            'cronhook' => 'wpunotifications__cron_hook',
-            'croninterval' => 3600
-        ));
-        /* Callback when hook is triggered by the cron */
-        add_action('wpunotifications__cron_hook', array(&$this,
-            'wpunotifications__cron_hook'
-        ), 10);
-
-        # MESSAGES
-        if (is_admin()) {
-            require_once __DIR__ . '/inc/WPUBaseMessages/WPUBaseMessages.php';
-            $this->messages = new \wpunotifications\WPUBaseMessages($this->plugin_settings['id']);
-        }
     }
 
     public function wp_enqueue_scripts() {
@@ -392,6 +402,7 @@ class WPUNotifications {
         echo $this->baseadmindatas->get_admin_table(
             false,
             array(
+                'page_id' => 'wpunotifications-notifications',
                 'perpage' => 50,
                 'columns' => array(
                     'id' => __('ID', 'wpunotifications'),
